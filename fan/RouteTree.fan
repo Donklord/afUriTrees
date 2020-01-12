@@ -14,18 +14,14 @@ class RouteTree {
 			absoluteMap.add(["uriKey":url, "handler":handler])
 		}
 		else
-		{
-			//Loop through routeTreeMap to see if a child tree exists
-			// If it doesnt, create one
-			
+		{			
 			if (childRouteTree == null)
 			{
 				childRouteTree = RouteTree()
 			}
-			
-			//TODO Split out first / base url
-			
-			childRouteTree = childRouteTree.add(url, handler)
+			routeTreeMap.add(["uriKey":url.getRange(0..0), "handler":childRouteTree])
+			childRouteTree = childRouteTree.add(url.getRange(1..-1), handler)
+			//echo(childRouteTree.listAbsoluteMaps)
 		}
 		
 		
@@ -44,9 +40,58 @@ class RouteTree {
 	// FIXME Debug function only, should this be removed in the final version?
 	Map[] listRouteTreeMaps() { return routeTreeMap }
 	
-    // TODO Returns 'null' if no match.
-  //  @Operator
-  //  UrlMatch? get(Uri url) {
-  //      ...
-  //  }
+    @Operator
+    Route? get(Uri url) {
+		Bool matchFound := false
+		Uri curLvlUri := url.getRange(0..0)
+		Route? newMatch
+		Bool containsAbsoluteWildCard := false
+		Uri wildcardUriKey := ``
+		Str[] splitUrl := url.pathStr.split('/')
+		Str[] wildcardList := [,]
+		
+        //Run through absoluteMaps
+		// If match found, return UrlMatch
+		absoluteMap.each |map|
+		{
+			
+			if (map["uriKey"] == curLvlUri && map["uriKey"] != `/*`)
+			{
+				echo("normal")
+				matchFound = true
+				newMatch = Route(url, map["uriKey"], map["handler"], [,])  //TODO tie in wildcard
+			}
+			if (map["uriKey"] == `/*`)
+			{
+				containsAbsoluteWildCard = true
+				wildcardUriKey = map["uriKey"]
+			}
+		}
+		
+		
+		if (containsAbsoluteWildCard) {
+			Int index := 0
+			wildcardUriKey.pathStr.split('/').each |key|
+			{
+				if (key == "*" && key != "") {
+					wildcardList.add(splitUrl.get(index))
+				}
+				index++
+			}
+			echo(wildcardList)
+		}
+		else if (newMatch != null)
+		{
+			return newMatch
+		}
+		
+		
+		
+		//If no matches found, run through routeTreeMaps
+		// If match found, pass request to new get
+		
+		//If no matches found, null
+		
+		return null
+    }
 }
