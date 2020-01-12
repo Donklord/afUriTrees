@@ -7,5 +7,10 @@ class Route {
     Str[]  wildcardSegments   // path segments that * should be replaced with
     //Str[]  remainingSegments // TODO remaining segments that ** or *** match to (I'm a bit fuzzy on if this is needed)
 	
-	new make(|This| f) { f(this) }
+	new make(Uri requestUrl, Uri definedUrl, Obj handler, Str[] wildcardSegments) {
+		this.requestUrl = requestUrl
+		this.definedUrl = definedUrl
+		this.handler = handler
+		this.wildcardSegments = wildcardSegments
+	}
 }
