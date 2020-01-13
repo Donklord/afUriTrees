@@ -1,4 +1,3 @@
-
 class Hello
 {
   static Void main() { 
@@ -14,6 +13,6 @@ class Hello
 	myTree.add(`/foo2/bar2`, "test6")
 	//echo(myTree.listAbsoluteMaps)
 	//echo(myTree.listRouteTreeMaps)
-	echo(myTree.get(`/bar`)) //.handler
+	echo(myTree.get(`/*`).handler) //.handler
   }
 }
