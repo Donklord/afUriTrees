@@ -15,7 +15,7 @@ class Build : BuildPod {
 			"sys 1.0"
 		]
 
-		srcDirs = [`fan/`]
+		srcDirs = [`fan/`, `test/`]
 		resDirs = [,]
 
 		docApi = true
