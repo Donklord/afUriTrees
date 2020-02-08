@@ -1,4 +1,3 @@
-
 class RouteTree {
 
 	private Str:Obj			handlerMap	:= Str:Obj[:]
@@ -53,7 +52,7 @@ class RouteTree {
 			newMatch = handlerMap["*"]
 			
 			if (newMatch != null) {
-				return Route(url, `*`, Uri.fromStr("/" + workingUri), newMatch, Uri.fromStr(workingUri).path)
+				return Route(url, `*`, Uri.fromStr("/" + workingUri), newMatch, Uri.fromStr(url.path[0]).path)
 			}
 		} else if (routeDepth > 1) {
 			matchHandler = nestedMap[workingUri]
@@ -67,7 +66,7 @@ class RouteTree {
 			matchHandler = nestedMap["*"]
 			if (matchHandler != null) {
 				newMatch = matchHandler.get(Uri.fromStr("/" + url.getRange(1..-1).toStr))
-				(newMatch as Route).wildcardSegments = (newMatch as Route).wildcardSegments.rw.insert(0, Uri.fromStr(workingUri).path[0])
+				(newMatch as Route).wildcardSegments = (newMatch as Route).wildcardSegments.rw.insert(0, Uri.fromStr(url.path[0]).path[0])
 				(newMatch as Route).canonicalUrl = Uri.fromStr("/" + workingUri + (newMatch as Route).canonicalUrl.toStr)
 				return newMatch
 			}
