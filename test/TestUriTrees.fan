@@ -96,7 +96,7 @@ class TestUriTrees : Test {
 		verifyEq(myTree.get(`/fOO`).canonicalUrl, `/foo`)
 		
 		verifyEq(myTree.get(`/foO2/BaR/TrucK/What`).handler, "test2")
-		verifyEq(myTree.get(`/foO2/BaR/TrucK/What`).canonicalUrl, `/foo2/bar/truck/*`)
+		verifyEq(myTree.get(`/foO2/BaR/TrucK/What`).canonicalUrl, `/foo2/bar/truck/what`)
 	}
 	
 	
