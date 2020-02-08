@@ -1,14 +1,14 @@
 class RouteTree {
 
-	private Str:Obj			handlerMap	:= Str:Obj[:]
-	private Str:RouteTree	nestedMap	:= Str:RouteTree[:]
+	private Str:Obj	handlerMap := Str:Obj[:]
+	private Str:RouteTree nestedMap	:= Str:RouteTree[:]
 	
 	This add(Uri url, Obj handler) {
 		if (url.pathStr.contains("//"))	throw ArgErr("That's nasty! $url")
 		
 		childRouteTree := (RouteTree?) null
-        routeStr	:= url.pathStr
-		routeDepth	:= url.path.size
+                routeStr := url.pathStr
+		routeDepth := url.path.size
 		workingUri := url.path[0].lower
 		
 		if (routeDepth == 1) {	
