@@ -1,12 +1,13 @@
-
 class Hello
 {
   static Void main() { 
   	RouteTree myTree := RouteTree()
 		
 	myTree.add(`/foo/*/edit/*`, "test")
-	//echo(myTree.listAbsoluteMaps)
-	//echo(myTree.listRouteTreeMaps)
-	echo(myTree.get(`/foo/bar/edit/12`).wildcardSegments)
+	myTree.add(`/foo2`, "test2")
+	//echo(myTree.getHandlerMap)
+	//echo(myTree.getNestedMap)
+	//echo(myTree.get(`FOO2`).handler)
+	echo(myTree.get(`/fOo/bar/Edit/12/`).handler)
   }
 }
