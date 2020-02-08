@@ -24,9 +24,9 @@ class TestUriTrees : Test {
 		myTree.add(`/foo`, "test")
 		myTree.add(`/foo2/bar`, "test2")
 		
-		VerifyEq(myTree.get(`/fOO`).handler, "test")
-		VerifyEq(myTree.get(`/foo2/BAR`).handler, "test2")
-		VerifyEq(myTree.get(`/fOO2/BAR`).handler, "test2")
+		verifyEq(myTree.get(`/fOO`).handler, "test")
+		verifyEq(myTree.get(`/foo2/BAR`).handler, "test2")
+		verifyEq(myTree.get(`/fOO2/BAR`).handler, "test2")
 	}
 	
 	// Test Trailing Slash-- Verify that get calls process regardless if a trailing slash exists
@@ -39,8 +39,8 @@ class TestUriTrees : Test {
 		myTree.add(`/foo`, "test")
 		myTree.add(`/foo2/bar`, "test2")
 		
-		VerifyEq(myTree.get(`/foo/`).handler, "test")
-		VerifyEq(myTree.get(`/foo2/bar/`).handler, "test2")
+		verifyEq(myTree.get(`/foo/`).handler, "test")
+		verifyEq(myTree.get(`/foo2/bar/`).handler, "test2")
 	}
 	
 	// Test wildcard functionality
@@ -82,6 +82,21 @@ class TestUriTrees : Test {
 		myTree.add(`/*`, "test2")
 		
 		verifyEq(myTree.get(`/foo`).handler, "test")
+	}
+	
+	// Test Canonical Url
+	//   1 - Create myTree
+	
+	Void testCanonical() {
+		myTree := RouteTree()
+		myTree.add(`/foo`, "test")
+		myTree.add(`/foo2/bar/truck/*`, "test2")
+			
+		verifyEq(myTree.get(`/fOO`).handler, "test")
+		verifyEq(myTree.get(`/fOO`).canonicalUrl, `/foo`)
+		
+		verifyEq(myTree.get(`/foO2/BaR/TrucK/What`).handler, "test2")
+		verifyEq(myTree.get(`/foO2/BaR/TrucK/What`).canonicalUrl, `/foo2/bar/truck/*`)
 	}
 	
 	
