@@ -67,6 +67,7 @@ class TestUriTrees : Test {
 	// Test map preferences; absoluteMap > routeTreeMap
 	//   1 - Create myTree
 	//   2 - Create tree structure; `/foo`, `/foo/bar`
+	//   3 - Verify get for  '/foo'
 	Void testMapPrefrences() {
 		myTree := RouteTree()
 		myTree.add(`/foo`, "test")
@@ -76,6 +77,9 @@ class TestUriTrees : Test {
 	}
 	
 	// Test explicit preferences; explicit path > wildcard path
+	//   1 - Create myTree
+	//   2 - Create tree structure; `/foo`, `/*`
+	//   3 - Verify get for  '/foo'
 	Void testExplicitPreferences() {
 		myTree := RouteTree()
 		myTree.add(`/foo`, "test")
@@ -86,7 +90,8 @@ class TestUriTrees : Test {
 	
 	// Test Canonical Url
 	//   1 - Create myTree
-	
+	//   2 - Create tree structure; `/foo`, `/foo2/bar/truck/*`
+	//   3 - Verify handler and canonical get for single, and nested trees.
 	Void testCanonical() {
 		myTree := RouteTree()
 		myTree.add(`/foo`, "test")
@@ -97,6 +102,26 @@ class TestUriTrees : Test {
 		
 		verifyEq(myTree.get(`/foO2/BaR/TrucK/What`).handler, "test2")
 		verifyEq(myTree.get(`/foO2/BaR/TrucK/What`).canonicalUrl, `/foo2/bar/truck/what`)
+	}
+	
+	// Test Double Wildcard
+	//   1 - Create myTree
+	//   2 - Create tree structure; `/my/images/**`, `/**`
+	//   3 - Verify handler, canonical, wildcardSegments, and remainingSegments for nested, and single uri structures.
+	Void testDoubleWildcard() {
+		myTree := RouteTree()
+		myTree.add(`/my/images/**`, "test")
+		myTree.add(`/**`, "test2")
+		
+		verifyEq(myTree.get(`/my/images/get/file/foo.png`).handler, "test")
+		verifyEq(myTree.get(`/My/Images/get/file/fOo.png`).canonicalUrl, `/my/images/get/file/foo.png`)
+		verifyEq(myTree.get(`/my/images/get/file/foo.png`).wildcardSegments, ["get", "file", "foo.png"])
+		verifyEq(myTree.get(`/my/images/get/file/foo.png`).remainingSegments, ["get", "file", "foo.png"])
+		
+		verifyEq(myTree.get(`/foo.png`).handler, "test2")
+		verifyEq(myTree.get(`/fOo.png`).canonicalUrl, `/foo.png`)
+		verifyEq(myTree.get(`/foo.png`).wildcardSegments, ["foo.png"])
+		verifyEq(myTree.get(`/foo.png`).remainingSegments, ["foo.png"])
 	}
 	
 	
