@@ -39,66 +39,63 @@ class RouteTree {
     Route? get(Uri url) {
 		matchHandler := (RouteTree?) null
 		workingUri := url.path[0].lower
-		newMatch := null
+		handlerMatch := null
+		routeMatch := (Route?) null
 		routeDepth	:= url.path.size
 		if (routeDepth == 1) {
 
-			newMatch = handlerMap[workingUri]
+			handlerMatch = handlerMap[workingUri]
 
-			if (newMatch != null) {
-				return Route(url, workingUri.toUri, `/` + workingUri.toUri,newMatch, Str[,], Str[,])
+			if (handlerMatch != null) {
+				return Route(url, workingUri.toUri, `/` + workingUri.toUri,handlerMatch, Str[,], Str[,])
 			}
 
-			newMatch = handlerMap["**"]
+			handlerMatch = handlerMap["**"]
 
-			if (newMatch != null) {
-				return Route(url, `**`, `/` + workingUri.lower.toUri, newMatch, [url.path[0]], [url.path[0]])
+			if (handlerMatch != null) {
+				return Route(url, `**`, `/` + workingUri.lower.toUri, handlerMatch, [url.path[0]], [url.path[0]])
 			}
 
-			newMatch = handlerMap["*"]
+			handlerMatch = handlerMap["*"]
 
-			if (newMatch != null) {
-				return Route(url, `*`, `/` + workingUri.toUri, newMatch, Uri.fromStr(url.path[0]).path, Str[,])
+			if (handlerMatch != null) {
+				return Route(url, `*`, `/` + workingUri.toUri, handlerMatch, Uri.fromStr(url.path[0]).path, Str[,])
 			}
 		} else if (routeDepth > 1) {
 			matchHandler = nestedMap[workingUri]
 			if (matchHandler != null) {
-				newMatch = matchHandler[url[1..-1]]
+				routeMatch = matchHandler[url[1..-1]]
 				
-				// --> TODO no need for (as Route)  --> PB: Because newMatch is used for a number of different var types in this method, i need to add as Route so fantom knows its a route type  Otherwise this will error out, having issues with Obj
-				if (newMatch != null) {
+				if (routeMatch != null) {
 					
-					if (!(newMatch as Route).canonicalUrl.isPathAbs) {
-						(newMatch as Route).canonicalUrl = Uri.fromStr("/" + workingUri + "/" + (newMatch as Route).canonicalUrl.toStr)
+					if (!routeMatch.canonicalUrl.isPathAbs) {
+						routeMatch.canonicalUrl = Uri.fromStr("/" + workingUri + "/" + routeMatch.canonicalUrl.toStr)
 					} else {
-						(newMatch as Route).canonicalUrl = Uri.fromStr("/" + workingUri + (newMatch as Route).canonicalUrl.toStr)
+						routeMatch.canonicalUrl = Uri.fromStr("/" + workingUri + routeMatch.canonicalUrl.toStr)
 					}
-					(newMatch as Route).requestUrl = url
+					routeMatch.requestUrl = url
 					
 				}
-				return newMatch
+				return routeMatch
 			}
 
-			newMatch = handlerMap["**"]
+			handlerMatch = handlerMap["**"]
 
-			if (newMatch != null) {
+			if (handlerMatch != null) {
 				Str[] wildCardList := url.path
-				return Route(url, `**`, Uri.fromStr(url.toStr.lower), newMatch, wildCardList, wildCardList)
+				return Route(url, `**`, Uri.fromStr(url.toStr.lower), handlerMatch, wildCardList, wildCardList)
 			}
 
 			matchHandler = nestedMap["*"]
 
 			if (matchHandler != null) {
-				newMatch = matchHandler.get(Uri.fromStr("/" + url.getRange(1..-1).toStr))
-
-				// --> no need for (as Route)   --> PB, see line 72 comment above.
-				// --> TODO Uri.fromStr(url.path[0]).path[0] ???/  PB: Uri.fromstr(url.path[0]) returns back as a list.  I have to pull that out, so i can insert it to the begining of a new list.
-				// --> TODO good idea, let's keep the .rw. but now lets make the initial Lists immutable via Str#.emptyList  PB: you may have to explain "Str#.emptyList" to be, ive never seen that syntax before.
-				(newMatch as Route).wildcardSegments = (newMatch as Route).wildcardSegments.rw.insert(0, Uri.fromStr(url.path[0]).path[0])
-				// --> no need for (as Route)   --> PB, see line 72 comment above.
-				(newMatch as Route).canonicalUrl = Uri.fromStr("/" + workingUri + (newMatch as Route).canonicalUrl.toStr)
-				(newMatch as Route).requestUrl = url
-				return newMatch
+				routeMatch = matchHandler.get(Uri.fromStr("/" + url.getRange(1..-1).toStr))
+				
+				routeMatch.wildcardSegments = routeMatch.wildcardSegments.rw.insert(0, Uri.fromStr(url.path[0]).path[0])
+				
+				routeMatch.canonicalUrl = Uri.fromStr("/" + workingUri + routeMatch.canonicalUrl.toStr)
+				routeMatch.requestUrl = url
+				return routeMatch
 			}
 		}
 
