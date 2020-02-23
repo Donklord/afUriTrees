@@ -9,7 +9,7 @@ class RouteTree {
 		if (url.pathStr.contains("//"))	throw ArgErr("That's nasty! $url")
 
 		childRouteTree := (RouteTree?) null
-        routeStr	:= url.pathStr
+        	routeStr	:= url.pathStr
 		routeDepth	:= url.path.size
 		workingUri := url.path[0].lower
 
