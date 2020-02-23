@@ -1,13 +1,11 @@
 class Hello
 {
   static Void main() { 
-  	RouteTree myTree := RouteTree()
-		
-	myTree.add(`/foo/*/edit/*`, "test")
-	myTree.add(`/foo2`, "test2")
-	//echo(myTree.getHandlerMap)
-	//echo(myTree.getNestedMap)
-	//echo(myTree.get(`FOO2`).handler)
-	echo(myTree.get(`/fOo/bar/Edit/12/`).handler)
+	myTree := RouteTree()
+	myTree.set(`/*`, "test")
+	myTree.set(`/foo/*`, "test2")
+	myTree.set(`/foo2/*/edit/*`, "test3")
+
+	echo(myTree.get(`/foo2/wildCard/edit/12`).handler)
   }
 }
