@@ -1,3 +1,4 @@
+
 class TestUriTrees : Test {
 
 	// Test Basic Functionality
@@ -5,7 +6,7 @@ class TestUriTrees : Test {
 	//   2 - Create a basic tree structure; `/foo`, `/foo2/bar`
 	//   3 - Verify get for both tree structures
 	Void testBasic() {
-		myTree := RouteTree()
+		myTree := RouteMatcher()
 
 		myTree.set(`/foo`, "test")
 		myTree.set(`/foo2/bar`, "test2")
@@ -22,7 +23,7 @@ class TestUriTrees : Test {
 	//   2 - Create a basic tree structure; `/foo`, `/foo2/bar`
 	//   3 - Verify get for both tree structures with random upper case letters
 	Void testCaseSensitivity() {
-		myTree := RouteTree()
+		myTree := RouteMatcher()
 
 		myTree.set(`/foo`, "test")
 		myTree.set(`/foo2/bar`, "test2")
@@ -37,7 +38,7 @@ class TestUriTrees : Test {
 	//   2 - Create a basic tree structure; `/foo`, `/foo2/bar`
 	//   3 - Verify get for both tree structures with gets that end in a slash
 	Void testTrailingSlash() {
-		myTree := RouteTree()
+		myTree := RouteMatcher()
 
 		myTree.set(`/foo`, "test")
 		myTree.set(`/foo2/bar`, "test2")
@@ -52,7 +53,7 @@ class TestUriTrees : Test {
 	//   3 - Verify get for both tree structures
 	//   4 - Verify wildcard return
 	Void testWildcard() {
-		myTree := RouteTree()
+		myTree := RouteMatcher()
 		myTree.set(`/*`, "test")
 		myTree.set(`/foo/*`, "test2")
 		myTree.set(`/foo2/*/edit/*`, "test3")
@@ -75,7 +76,7 @@ class TestUriTrees : Test {
 	//   2 - Create tree structure; `/foo`, `/foo/bar`
 	//   3 - Verify get for  '/foo'
 	Void testMapPrefrences() {
-		myTree := RouteTree()
+		myTree := RouteMatcher()
 		myTree.set(`/foo`, "test")
 		myTree.set(`/foo/bar`, "test2")
 
@@ -87,7 +88,7 @@ class TestUriTrees : Test {
 	//   2 - Create tree structure; `/foo`, `/*`
 	//   3 - Verify get for  '/foo'
 	Void testExplicitPreferences() {
-		myTree := RouteTree()
+		myTree := RouteMatcher()
 		myTree.set(`/foo`, "test")
 		myTree.set(`/*`, "test2")
 
@@ -99,7 +100,7 @@ class TestUriTrees : Test {
 	//   2 - Create tree structure; `/foo`, `/foo2/bar/truck/*`
 	//   3 - Verify handler and canonical get for single, and nested trees.
 	Void testCanonical() {
-		myTree := RouteTree()
+		myTree := RouteMatcher()
 		myTree.set(`/foo`, "test")
 		myTree.set(`/foo2/bar/truck/*`, "test2")
 
@@ -116,20 +117,20 @@ class TestUriTrees : Test {
 	//   2 - Create tree structure; `/my/images/**`, `/**`
 	//   3 - Verify handler, canonical, wildcardSegments, and remainingSegments for nested, and single uri structures.
 	Void testDoubleWildcard() {
-		myTree := RouteTree()
+		myTree := RouteMatcher()
 		myTree.set(`/my/images/**`, "test")
 		myTree.set(`/**`, "test2")
 
 		verifyEq(myTree.get(`/my/images/get/file/foo.png`).handler, "test")
 		verifyEq(myTree.get(`/My/Images/get/file/fOo.png`).canonicalUrl, `/my/images/get/file/foo.png`)
-		verifyEq(myTree.get(`/my/images/get/file/foo.png`).wildcardSegments, ["get", "file", "foo.png"])
+		verifyEq(myTree.get(`/my/images/get/file/foo.png`).wildcardSegments, Str[,])
 		verifyEq(myTree.get(`/my/images/get/file/foo.png`).remainingSegments, ["get", "file", "foo.png"])
 
 		verifyEq(myTree.get(`/my/images/get/file/foo.png`).requestUrl, `/my/images/get/file/foo.png`)
 
 		verifyEq(myTree.get(`/foo.png`).handler, "test2")
 		verifyEq(myTree.get(`/fOo.png`).canonicalUrl, `/foo.png`)
-		verifyEq(myTree.get(`/foo.png`).wildcardSegments, ["foo.png"])
+		verifyEq(myTree.get(`/foo.png`).wildcardSegments, Str[,])
 		verifyEq(myTree.get(`/foo.png`).remainingSegments, ["foo.png"])
 	}
 }
